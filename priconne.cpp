@@ -1,15 +1,14 @@
 #include <iostream>
-#include <cmath>
 #include <random>
-#include <ctime>
-#include <iomanip>
 #include <vector>
 
-int main (int argc, char* argv[]) {
+int main (int argc, char* argv[]) 
+{
 	
 	std::vector<int> v;
 	double rolls;
 
+	/*Check for arguments*/
 	if (argc < 2) {
 		std::cerr << "Require to enter the number of rolls.\n";
 		return 0;
@@ -17,26 +16,26 @@ int main (int argc, char* argv[]) {
 		rolls = atoi(argv[1]);
 	}
 
-
-	//Gacha rates
-	double pickup_rate = 0.007;
-	double threestar_rate = 0.03;
-	double twostar_rate = 0.18;
-	double onestar_rate = 0.79;
-	double pity_rate = 200;
+	/*Priconne Gacha rates*/
+	double pickup_rate = 0.007; //0.7%
+	double threestar_rate = 0.03; //3%
+	double twostar_rate = 0.18; //18%
+	double onestar_rate = 0.79; //79%
+	double pity_rate = 200; //Ceiling 200 rolls
 	
-	//Gacha count
+	/*Counters*/
 	double pickup_char_count = 0;
 	double threestar_count = 0;
 	double twostar_count = 0;
 	double onestar_count = 0;
 	double pity_count = 0;
 	
+	/*Random device generator*/
 	std::random_device rd;
-	//std::default_random_engine generator(time(0));
-	std::mt19937 generator(time(0));
+	std::mt19937 generator(rd());
 	std::uniform_real_distribution<double> distribution(0,1.0);
 	
+	/*Main loop for simulating rolls*/
 	for (int i = 0; i < rolls; i++) {
 		double n = distribution(generator);
 		if (pity_count == pity_rate || n <= pickup_rate) {
@@ -56,10 +55,12 @@ int main (int argc, char* argv[]) {
 		}
 	}
 	
+	/*Variables for calculating how many pity was reached and average rolls taken to get a pickup character*/
 	int average_rolls = 0;
 	int total = 0;
 	int reached_pity = 0;	
 	
+	/*Check how many times we reached pity when pickup character was acquired*/
 	for (int i : v) {
 		total += i;
 		if (i == 200) {
@@ -70,6 +71,7 @@ int main (int argc, char* argv[]) {
 		average_rolls = total/v.size();
 	}	
 	
+	/*Print out the results*/
 	std::cout << "Pickup rate = " << pickup_char_count/rolls << std::endl;
 	std::cout << "Three stars rate = " << threestar_count/rolls << std::endl;
 	std::cout << "Two stars rate = " << twostar_count/rolls << std::endl;
